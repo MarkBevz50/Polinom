@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Polinomial.h"
 
-Polynomial Polynode::CreatePoly(double* a, int n)
+Polynomial CreatePoly(double* a, int n)
 {
     Polynode phantom(0, 0);
     Polynomial curr = &phantom;
@@ -38,7 +38,6 @@ Polynomial Add(Polynomial a, Polynomial b)
             a = a->next;
 
         }
-    
         else
         {
             curr->next = new Polynode(b->coef, b->power);
@@ -46,7 +45,20 @@ Polynomial Add(Polynomial a, Polynomial b)
             b = b->next;
         }
 
- }
+    }
+    while (a != nullptr)
+    {
+        curr->next = new Polynode(a->coef, a->power);
+        curr = curr->next;
+        a = a->next;
+    }
+    while (b != nullptr)
+    {
+        curr->next = new Polynode(b->coef, b->power);
+        curr = curr->next;
+        b = b->next;
+    }
+
     return phantom.next;
 }
 std::ostream& operator << (std::ostream& os, Polynomial p)
@@ -57,4 +69,15 @@ std::ostream& operator << (std::ostream& os, Polynomial p)
 
     }
 
+}
+
+bool AreEqual(Polynomial A, Polynomial B)
+{
+    while (A!= nullptr && B = !nullptr && A->coef == B->coef && A->power == B->power)
+    {
+        A = A->next;
+        B = B->next;
+
+    }
+    return A == B;
 }
