@@ -24,6 +24,7 @@
     <ProjectGuid>{8b6b286a-f8fc-4df5-a2ac-5b4c65c08189}</ProjectGuid>
     <RootNamespace>Polinom</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Polinomial</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="program.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PolyTools\PolyTools.vcxproj">
