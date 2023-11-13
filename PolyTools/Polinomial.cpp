@@ -1,4 +1,5 @@
-﻿#include "Polinomial.h"
+﻿#include "pch.h"
+#include "Polinomial.h"
 #include <iomanip>
 
 Polynomial CreatePoly(double* a, int n)
@@ -69,6 +70,7 @@ Polynomial AddPoly(Polynomial a, Polynomial b)
     }
     return phantom.next;
 }
+
 
 bool AreEqual(Polynomial A, Polynomial B)
 {
