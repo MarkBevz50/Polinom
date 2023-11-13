@@ -21,7 +21,11 @@ int main()
         std::cout << "D_8(x) = " << D << '\n';
         std::cout << "The function and the operator act equally: " << AreEqual(C, D) << '\n';
         Polynomial V = Derivative(C);
-        std::cout << "C_8'(x) = " << V << '\n';
+        std::cout << "Derivative of C = " << V << '\n';
+        Polynomial M = MultByC(V, 6.0);
+        std::cout << "Polinome P multiplied by 6 =  " << M << '   ' << '\n';
+        Polynomial F = MultPoly(P2, V);
+        std::cout << "Product of  polinoms P2 and V = " << F << '\n';
         RemovePoly(V);
         RemovePoly(P);
         RemovePoly(P2);

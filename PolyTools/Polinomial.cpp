@@ -71,6 +71,38 @@ Polynomial AddPoly(Polynomial a, Polynomial b)
     return phantom.next;
 }
 
+Polynomial MultByC(Polynomial a, double c)
+{
+    Polynomial result = nullptr;
+    while (a != nullptr) {
+        double prod = a->coef * c;
+        result = new PolyNode(prod, a->power, result);
+        a = a->next;
+    }
+    return result;
+}
+
+Polynomial MultPoly(Polynomial a, Polynomial b)
+{
+    Polynomial prod = nullptr;
+    Polynomial original = b;
+    while (a != nullptr)
+    {
+        while (b != nullptr)
+        {
+            double prodpow = a->power + b->power;
+            double coefprod = a->coef * b->coef;
+            prod = new PolyNode(coefprod, prodpow, prod);
+            b = b->next;
+        }
+        a = a->next;
+        b = original;
+    }
+        
+    
+    return prod;
+}
+
 
 bool AreEqual(Polynomial A, Polynomial B)
 {
