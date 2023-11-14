@@ -24,8 +24,10 @@ int main()
         std::cout << "Derivative of C = " << V << '\n';
         Polynomial M = MultByC(V, 6.0);
         std::cout << "Polinome P multiplied by 6 =  " << M << '   ' << '\n';
-        Polynomial F = MultPoly(P2, V);
-        std::cout << "Product of  polinoms P2 and V = " << F << '\n';
+        Polynomial F = MultPoly(R, V);
+        std::cout << "Product of  polinoms R_8(x) and C = " << F << '\n';
+        Polynomial G = ReadPoly(std::cin);
+        std::cout << "Your polinomial G = :" << G << '\n';
         RemovePoly(V);
         RemovePoly(P);
         RemovePoly(P2);

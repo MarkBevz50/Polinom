@@ -2,6 +2,32 @@
 #include "Polinomial.h"
 #include <iomanip>
 
+Polynomial ReadPoly(std::istream& is)
+{
+    Polynomial poly = nullptr;
+    while (true)
+    {
+        double coef;
+        int power;
+
+        std::cout << "Enter the coefficient(or 0 to stop)" <<  ' \n';
+        is >> coef;
+        if (coef == 0)
+        {
+            break;
+        }
+        std::cout << "Enter power: " << ' \n';
+        is >> power;
+
+        Polynomial newNode = new PolyNode(coef, power, poly);
+            poly = newNode;
+
+
+            
+    }
+    return poly;
+}
+
 Polynomial CreatePoly(double* a, int n)
 {
     PolyNode phantom(0, 0);
@@ -84,23 +110,38 @@ Polynomial MultByC(Polynomial a, double c)
 
 Polynomial MultPoly(Polynomial a, Polynomial b)
 {
-    Polynomial prod = nullptr;
-    Polynomial original = b;
-    while (a != nullptr)
+    Polynomial result = nullptr;
+    Polynomial aCurrent = a;
+
+    while (aCurrent != nullptr)
     {
-        while (b != nullptr)
+        Polynomial bCurrent = b;
+
+        while (bCurrent != nullptr)
         {
-            double prodpow = a->power + b->power;
-            double coefprod = a->coef * b->coef;
-            prod = new PolyNode(coefprod, prodpow, prod);
-            b = b->next;
+            double prodpow = aCurrent->power + bCurrent->power;
+            double coefprod = aCurrent->coef * bCurrent->coef;
+
+            // Додати до існуючого вузла, якщо ступінь вже існує
+            Polynomial existingNode = FindNodeWithPower(result, prodpow);
+            if (existingNode != nullptr)
+            {
+                existingNode->coef += coefprod;
+            }
+            else
+            {
+                // Додати новий вузол
+                result = new PolyNode(coefprod, prodpow, result);
+            }
+
+            bCurrent = bCurrent->next;
         }
-        a = a->next;
-        b = original;
+
+        aCurrent = aCurrent->next;
     }
-        
+    result = SortByPower(result);
     
-    return prod;
+    return result;
 }
 
 
@@ -152,6 +193,8 @@ Polynomial Derivative(Polynomial p)
     return phantom.next;
 }
 
+
+
 std::ostream& operator<<(std::ostream& os, Polynomial p)
 {
     while (p != nullptr)
@@ -160,6 +203,59 @@ std::ostream& operator<<(std::ostream& os, Polynomial p)
         p = p->next;
     }
     return os;
+}
+
+Polynomial FindNodeWithPower(Polynomial poly, double TargetPower)
+{
+    while (poly != nullptr)
+    {
+        if (poly->power == TargetPower)
+        {
+            return poly;
+        }
+        poly = poly->next;
+    }
+    return nullptr;
+}
+
+
+Polynomial SortByPower(Polynomial poly)
+{
+    if (poly == nullptr || poly->next == nullptr)
+    {
+        return poly;
+    }
+
+    bool swaped;
+    Polynomial start;
+    Polynomial current;
+    Polynomial origin = poly;
+
+    do {
+        start = poly;
+        swaped = false;
+        current = start;
+        while (current->next != nullptr)
+        {
+            if (current->power < current->next->power || current->power == current->next->power && current->power < current->next->power)
+            {
+                Swap(current, current->next);
+                swaped = true;
+            }
+            current = current->next;
+        }
+
+    } while (swaped);
+    return start;
+}
+
+
+
+void Swap(PolyNode*& a, PolyNode*& b)
+{
+    PolyNode* temp = a;
+    a = b;
+    b = temp;
 }
 
 Polynomial PolyNode::operator+(Polynomial other)

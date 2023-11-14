@@ -110,5 +110,25 @@ namespace PolinomialTests
 			Assert::AreEqual(0, Degree(A));
 			RemovePoly(A);
 		}
+		TEST_METHOD(TestMultPoly)
+		{
+
+
+
+
+
+
+
+
+
+		}
+
+
+
+
+
+
+
+
 	};
 }
