@@ -1,8 +1,9 @@
 ﻿#include "pch.h"
 #include "Polinomial.h"
 #include <iomanip>
+#include <cmath>
 
-Polynomial ReadPoly(std::istream& is)
+Polynomial ReadPoly(std::istream& is) //Використав std::endl, бо без нього виводиться на екран якесь зайве число 8202. Наскільки зрохумів потрібно очищувати буфер тут.
 {
     Polynomial poly = nullptr;
     while (true)
@@ -10,21 +11,20 @@ Polynomial ReadPoly(std::istream& is)
         double coef;
         int power;
 
-        std::cout << "Enter the coefficient(or 0 to stop)" <<  ' \n';
+        std::cout << "Enter the coefficient(or 0 to stop)" <<  std::endl;
         is >> coef;
         if (coef == 0)
         {
             break;
         }
-        std::cout << "Enter power: " << ' \n';
+        std::cout << "Enter power: " << std::endl;
         is >> power;
 
         Polynomial newNode = new PolyNode(coef, power, poly);
             poly = newNode;
-
-
             
     }
+    SortPower(poly);
     return poly;
 }
 
@@ -108,6 +108,7 @@ Polynomial MultByC(Polynomial a, double c)
     return result;
 }
 
+
 Polynomial MultPoly(Polynomial a, Polynomial b)
 {
     Polynomial result = nullptr;
@@ -122,8 +123,9 @@ Polynomial MultPoly(Polynomial a, Polynomial b)
             double prodpow = aCurrent->power + bCurrent->power;
             double coefprod = aCurrent->coef * bCurrent->coef;
 
-            // Додати до існуючого вузла, якщо ступінь вже існує
+            // Знайти або створити новий вузол
             Polynomial existingNode = FindNodeWithPower(result, prodpow);
+
             if (existingNode != nullptr)
             {
                 existingNode->coef += coefprod;
@@ -139,10 +141,14 @@ Polynomial MultPoly(Polynomial a, Polynomial b)
 
         aCurrent = aCurrent->next;
     }
-    result = SortByPower(result);
-    
+
+    // Сортуємо поліном за ступенями
+     SortPower(result);
+
     return result;
 }
+
+
 
 
 bool AreEqual(Polynomial A, Polynomial B)
@@ -193,6 +199,43 @@ Polynomial Derivative(Polynomial p)
     return phantom.next;
 }
 
+Polynomial Integral(Polynomial p)
+{
+    PolyNode phantom(0, 0);
+    Polynomial curr = &phantom;
+    while (p != nullptr)
+    {
+        curr->next = new PolyNode(p->coef / (p->power + 1), p->power + 1);
+        curr = curr->next;
+       p = p->next;
+    }
+    return phantom.next;
+}
+Polynomial IntegralPoint(Polynomial p, double x_0, double y_0)
+{
+    Polynomial I = Integral(p);
+    double C;
+    double value = CalcValue(I, x_0);
+    C = y_0 - value;
+    I = new PolyNode(C, 0, I);
+    return I;
+}
+
+Polynomial Power(Polynomial poly, int power)
+{
+    Polynomial Power = nullptr;
+    Polynomial start = poly;
+    while (start != nullptr)
+    {
+        double powerdcoef = pow(start->coef, power);
+        double powerdpow = start->power * power;
+
+        Power = new PolyNode(powerdcoef, powerdpow, Power);
+        start = start->next;
+    }
+    SortByPower(Power);
+    return Power;
+}
 
 
 std::ostream& operator<<(std::ostream& os, Polynomial p)
@@ -219,7 +262,7 @@ Polynomial FindNodeWithPower(Polynomial poly, double TargetPower)
 }
 
 
-Polynomial SortByPower(Polynomial poly)
+Polynomial SortByPower(Polynomial poly)  //Ще один варіант сортування. Виникає помилка з вічним циклом, не зміг її виправити, можливо підкажете у чому проблема.
 {
     if (poly == nullptr || poly->next == nullptr)
     {
@@ -248,15 +291,61 @@ Polynomial SortByPower(Polynomial poly)
     } while (swaped);
     return start;
 }
-
-
-
 void Swap(PolyNode*& a, PolyNode*& b)
 {
     PolyNode* temp = a;
     a = b;
     b = temp;
 }
+
+void SortPower(Polynomial& A)         //Робоча альтернатива
+{
+    if (A == nullptr || A->next == nullptr)
+    {
+        return;
+    }
+    Polynomial sorted = nullptr;
+    while (A != nullptr) {
+        Polynomial current = A;
+        A = A->next;
+        if (sorted == nullptr || current->power <= sorted->power)
+        {
+            current->next = sorted;
+            sorted = current;
+        }
+        else
+        {
+            Polynomial temp = sorted;
+            while (temp->next && temp->next->power < current->power)
+            {
+                temp = temp->next;
+            }
+            current->next = temp->next;
+            temp->next = current;
+        }
+    }
+    A = sorted;
+}
+Polynomial ReversePoly(Polynomial poly)
+{
+    Polynomial prev = nullptr;
+    Polynomial current = poly;
+    Polynomial next = nullptr;
+
+    while (current != nullptr)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+
+    return prev;
+}
+
+
+
+
 
 Polynomial PolyNode::operator+(Polynomial other)
 {

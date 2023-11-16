@@ -112,15 +112,123 @@ namespace PolinomialTests
 		}
 		TEST_METHOD(TestMultPoly)
 		{
+			// Створюємо поліном A = 2x^2 + 1
+			double aCoefficients[] = { 1, 0, 2 };
+			Polynomial A = CreatePoly(aCoefficients, sizeof(aCoefficients) / sizeof(aCoefficients[0]));
 
+			// Створюємо поліном B = x^2 + 3
+			double bCoefficients[] = { 3, 0, 1 };
+			Polynomial B = CreatePoly(bCoefficients, sizeof(bCoefficients) / sizeof(bCoefficients[0]));
 
+			// Очікуваний результат: 2x^4 + 7x^2 + 3
+			double expectedCoefficients[] = { 3, 0, 7, 0, 2 };
+			Polynomial expectedResult = CreatePoly(expectedCoefficients, sizeof(expectedCoefficients) / sizeof(expectedCoefficients[0]));
 
+			// Викликаємо функцію, яку тестуємо
+			Polynomial result = MultPoly(A, B);
 
+			// Перевірка кожного коефіцієнта та ступеня в результуючому поліномі
+			for (int i = 0; i < sizeof(expectedCoefficients) / sizeof(expectedCoefficients[0]); ++i)
+			{
+				Assert::AreEqual(expectedCoefficients[i], result->coef, L"Unexpected coefficient value");
+				Assert::AreEqual(i, result->power, L"Unexpected power value");
+				result = result->next;
+			}
 
+			// Переконуємося, що обидва полінома завершились одночасно
+			Assert::IsNull(result);
 
+			// Звільняємо пам'ять
+			RemovePoly(A);
+			RemovePoly(B);
+			RemovePoly(expectedResult);
+		}
+	
 
+		TEST_METHOD(Test_Integral)
+		{
+			double a[] = { -99.,1.,2.,1. };
+			const int n = sizeof a / sizeof a[0];
+			double b[] = { 0.,-99,1 / 2.,2 / 3.,1 / 4. };
+			const int m = sizeof b / sizeof b[0];
+			Polynomial A = CreatePoly(a, n);
+			Polynomial B = CreatePoly(b, m);
+			Polynomial C = Integral(A);
+			Assert::IsTrue(AreEqual(C, B));
+			/*remove(A);
+			remove(B);
+			remove(C);*/
+		}
+		TEST_METHOD(Test_IntegralPoint)
+		{
+			double a[] = { -99.,1.,2.,1. };
+			const int n = sizeof a / sizeof a[0];
+			double b[] = { 1195 / 12.,-99.,1 / 2.,2 / 3.,1 / 4. };
+			const int m = sizeof b / sizeof b[0];
+			Polynomial A = CreatePoly(a, n);
+			Polynomial B = CreatePoly(b, m);
+			Polynomial C = IntegralPoint(A, 1, 2);
+			Assert::IsTrue(AreEqual(C, B));
+			/*remove(A);
+			remove(B);
+			remove(C);*/
+		}
+		TEST_METHOD(TestMultByC)
+		{
+			double coefs[] = { 2, 0, 1 }; // Поліном A = x^2 + 2
 
+			Polynomial A = CreatePoly(coefs, sizeof coefs / sizeof coefs[0]);
 
+			double c = 3.0;
+			Polynomial result = MultByC(A, c); // A * 3 = 3x^2 + 6
+
+			// Очікуваний результат: 3x^2 + 6
+			double expectedCoefs[] = { 6, 0, 3 };
+
+			Polynomial expectedResult = CreatePoly(expectedCoefs, sizeof expectedCoefs / sizeof expectedCoefs[0]);
+
+			// Перевірка кожного коефіцієнта та ступеня в результуючому поліномі
+			for (int i = 0; i < sizeof expectedCoefs / sizeof expectedCoefs[0]; ++i)
+			{
+				Assert::AreEqual(expectedCoefs[i], result->coef, L"Unexpected coefficient value");
+				Assert::AreEqual(i, result->power, L"Unexpected power value");
+				result = result->next;
+			}
+
+			RemovePoly(A);
+			RemovePoly(result);
+			RemovePoly(expectedResult);
+		}
+		TEST_METHOD(TestPower)
+		{
+			// Arrange
+			double coefs[] = { 2, 1, 3 }; // Поліном: 3x^2 + x + 2
+			Polynomial poly = CreatePoly(coefs, sizeof coefs / sizeof coefs[0]);
+
+			// Act
+			Polynomial result = Power(poly, 3); // Підняти поліном у куб
+
+			// Assert
+			double expectedCoefs[] = { 27, 3, 9 }; // Очікуваний результат: 9x^6 + 3x^3 + 27
+			Polynomial expected = CreatePoly(expectedCoefs, sizeof expectedCoefs / sizeof expectedCoefs[0]);
+
+			// Порівняння кожного коефіцієнта та ступеня в результуючому поліномі
+			while (result != nullptr && expected != nullptr)
+			{
+				Assert::AreEqual(expected->coef, result->coef, L"Unexpected coefficient value");
+				Assert::AreEqual(expected->power, result->power, L"Unexpected power value");
+
+				result = result->next;
+				expected = expected->next;
+			}
+
+			// Перевірка, чи обидва поліноми закінчились
+			Assert::IsTrue(result == nullptr && expected == nullptr, L"Unexpected polynomial length");
+
+			// Очищення пам'яті
+			RemovePoly(poly);
+			RemovePoly(result);
+			RemovePoly(expected);
 		}
 
 
