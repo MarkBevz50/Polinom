@@ -27,12 +27,13 @@ int main()
         Polynomial F = MultPoly(R, V);
         std::cout << "Product of  polinoms R_8(x) and C = " << F << '\n';
         Polynomial G = ReadPoly(std::cin);
+
         std::cout << "Your polinomial G = :" << G << '\n';
         Polynomial H = Integral(G);
         cout << "\n\nPolynomial indefinite Integral A =" << H << " + C" << '\n';
         Polynomial L = IntegralPoint(H, 1, 2);
         cout << "\n\nDefine integral H that passes through the point (1,2): " << L << '\n';
-        Polynomial B = Power(G, 3);
+        Polynomial B = ReversePoly(Power(G, 3));
         cout << "Your polynomial G to power of 3 = " << B << '\n';
 
 
