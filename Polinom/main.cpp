@@ -22,8 +22,8 @@ int main()
         std::cout << "The function and the operator act equally: " << AreEqual(C, D) << '\n';
         Polynomial V = Derivative(C);
         std::cout << "Derivative of C = " << V << '\n';
-        Polynomial M = MultByC(V, 6.0);
-        std::cout << "Polinome P multiplied by 6 =  " << M << '   ' << '\n';
+        Polynomial M = ReversePoly(MultByC(V, 6.0));
+        std::cout << "Derivative multiplied by 6 =  " << M << '   ' << '\n';
         Polynomial F = MultPoly(R, V);
         std::cout << "Product of  polinoms R_8(x) and C = " << F << '\n';
         Polynomial G = ReadPoly(std::cin);
@@ -33,9 +33,8 @@ int main()
         cout << "\n\nPolynomial indefinite Integral A =" << H << " + C" << '\n';
         Polynomial L = IntegralPoint(H, 1, 2);
         cout << "\n\nDefine integral H that passes through the point (1,2): " << L << '\n';
-        Polynomial B = ReversePoly(Power(G, 3));
-        cout << "Your polynomial G to power of 3 = " << B << '\n';
-
+        Polynomial B = ReversePoly(PowerElem(G, 3));
+        cout << "Each Element of our polynomial G to power of 3 = " << B << '\n';
 
         RemovePoly(V);
         RemovePoly(P);

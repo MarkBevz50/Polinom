@@ -221,7 +221,7 @@ Polynomial IntegralPoint(Polynomial p, double x_0, double y_0)
     return I;
 }
 
-Polynomial Power(Polynomial poly, int power)
+Polynomial PowerElem(Polynomial poly, int power)
 {
     Polynomial Power = nullptr;
     Polynomial start = poly;
@@ -298,7 +298,7 @@ void Swap(PolyNode*& a, PolyNode*& b)
     b = temp;
 }
 
-void SortPower(Polynomial& A)         //Робоча альтернатива
+void SortPower(Polynomial& A)         //Робоча альтернатива сортування
 {
     if (A == nullptr || A->next == nullptr)
     {

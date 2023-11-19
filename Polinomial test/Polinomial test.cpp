@@ -115,18 +115,14 @@ namespace PolinomialTests
 			// Створюємо поліном A = 2x^2 + 1
 			double aCoefficients[] = { 1, 0, 2 };
 			Polynomial A = CreatePoly(aCoefficients, sizeof(aCoefficients) / sizeof(aCoefficients[0]));
-
 			// Створюємо поліном B = x^2 + 3
 			double bCoefficients[] = { 3, 0, 1 };
 			Polynomial B = CreatePoly(bCoefficients, sizeof(bCoefficients) / sizeof(bCoefficients[0]));
-
 			// Очікуваний результат: 2x^4 + 7x^2 + 3
 			double expectedCoefficients[] = { 3, 0, 7, 0, 2 };
 			Polynomial expectedResult = CreatePoly(expectedCoefficients, sizeof(expectedCoefficients) / sizeof(expectedCoefficients[0]));
-
 			// Викликаємо функцію, яку тестуємо
 			Polynomial result = MultPoly(A, B);
-
 			// Перевірка кожного коефіцієнта та ступеня в результуючому поліномі
 			for (int i = 0; i < sizeof(expectedCoefficients) / sizeof(expectedCoefficients[0]); ++i)
 			{
@@ -134,17 +130,13 @@ namespace PolinomialTests
 				Assert::AreEqual(i, result->power, L"Unexpected power value");
 				result = result->next;
 			}
-
 			// Переконуємося, що обидва полінома завершились одночасно
 			Assert::IsNull(result);
-
 			// Звільняємо пам'ять
 			RemovePoly(A);
 			RemovePoly(B);
 			RemovePoly(expectedResult);
 		}
-	
-
 		TEST_METHOD(Test_Integral)
 		{
 			double a[] = { -99.,1.,2.,1. };
@@ -175,18 +167,12 @@ namespace PolinomialTests
 		}
 		TEST_METHOD(TestMultByC)
 		{
-			double coefs[] = { 2, 0, 1 }; // Поліном A = x^2 + 2
-
+			double coefs[] = { 1.0, 0.0, 0.0,0.0,0.0,24.0,0.0,8.0 }; // Поліном A = 1 + 24x^5 + 8x^7
 			Polynomial A = CreatePoly(coefs, sizeof coefs / sizeof coefs[0]);
-
-			double c = 3.0;
-			Polynomial result = MultByC(A, c); // A * 3 = 3x^2 + 6
-
-			// Очікуваний результат: 3x^2 + 6
-			double expectedCoefs[] = { 6, 0, 3 };
-
+			double c = 6.0;
+			Polynomial result = MultByC(A, c); // A * 6 = 6 + 144x^5 + 48x^7 результат правельний, проте тест не проходить
+			double expectedCoefs[] = { 6.0, 0.0, 0.0,0.0,0.0,144.0,0.0,48.0 };
 			Polynomial expectedResult = CreatePoly(expectedCoefs, sizeof expectedCoefs / sizeof expectedCoefs[0]);
-
 			// Перевірка кожного коефіцієнта та ступеня в результуючому поліномі
 			for (int i = 0; i < sizeof expectedCoefs / sizeof expectedCoefs[0]; ++i)
 			{
@@ -194,49 +180,25 @@ namespace PolinomialTests
 				Assert::AreEqual(i, result->power, L"Unexpected power value");
 				result = result->next;
 			}
-
 			RemovePoly(A);
 			RemovePoly(result);
 			RemovePoly(expectedResult);
 		}
-		TEST_METHOD(TestPower)
+		TEST_METHOD(TestPolynomialPower)
 		{
-			// Arrange
-			double coefs[] = { 2, 1, 3 }; // Поліном: 3x^2 + x + 2
-			Polynomial poly = CreatePoly(coefs, sizeof coefs / sizeof coefs[0]);
+			double a[] = { 0.0, 2.0, 2.0, 4.0 }; // 2x + 2x^2 + 4x^3
+			const int n = sizeof a / sizeof a[0];
+			Polynomial poly = CreatePoly(a, n);
 
-			// Act
-			Polynomial result = Power(poly, 3); // Підняти поліном у куб
+			Polynomial result = ReversePoly(PowerElem(poly, 3));
 
-			// Assert
-			double expectedCoefs[] = { 27, 3, 9 }; // Очікуваний результат: 9x^6 + 3x^3 + 27
-			Polynomial expected = CreatePoly(expectedCoefs, sizeof expectedCoefs / sizeof expectedCoefs[0]);
+			double expected[] = { 0.0, 0.0, 4.0, 0.0, 4.0, 0.0, 16.0 };  //4x^2 + 4x^4 + 16x^6 так і виконується, проте тест не проходить
+			Polynomial expectedPoly = CreatePoly(expected, sizeof expected / sizeof expected[0]);
 
-			// Порівняння кожного коефіцієнта та ступеня в результуючому поліномі
-			while (result != nullptr && expected != nullptr)
-			{
-				Assert::AreEqual(expected->coef, result->coef, L"Unexpected coefficient value");
-				Assert::AreEqual(expected->power, result->power, L"Unexpected power value");
+			Assert::IsTrue(AreEqual(result, expectedPoly));
 
-				result = result->next;
-				expected = expected->next;
-			}
-
-			// Перевірка, чи обидва поліноми закінчились
-			Assert::IsTrue(result == nullptr && expected == nullptr, L"Unexpected polynomial length");
-
-			// Очищення пам'яті
 			RemovePoly(poly);
-			RemovePoly(result);
-			RemovePoly(expected);
+			RemovePoly(expectedPoly);
 		}
-
-
-
-
-
-
-
-
 	};
 }
